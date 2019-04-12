@@ -1,0 +1,22 @@
+server:
+  port: 18021
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: server_a
+          uri: http://localhost:8031
+          order: 0
+          predicates:
+            - Path=/a/** # 当StripPrefix=1时访问http://localhost:18021/a/test 会路由到http://localhost:8031/test，当StripPrefix=2时，访问http://localhost:18021/a/b/test会路由到http://localhost:8031/test
+          filters:
+            - StripPrefix=1 #表示跳过的前缀数
+        - id: server_b
+          uri: http://localhost:8032
+          order: 0
+          predicates:
+            - Path=/b/**
+          filters:
+            - StripPrefix=1
+      enabled: true # If you include the starter, but, for some reason, you do not want the gateway to be enabled, set false
